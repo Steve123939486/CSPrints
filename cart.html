@@ -11,20 +11,17 @@
       margin: 0;
       padding: 0;
     }
-
     header {
       background: #20232a;
       color: white;
       padding: 20px;
       text-align: center;
     }
-
     .container {
       max-width: 800px;
       margin: auto;
       padding: 20px;
     }
-
     .cart-item {
       background: white;
       padding: 10px;
@@ -34,7 +31,6 @@
       justify-content: space-between;
       align-items: center;
     }
-
     .cart-item button {
       background-color: #ff4d4d;
       border: none;
@@ -43,7 +39,6 @@
       cursor: pointer;
       border-radius: 4px;
     }
-
     form input, form select {
       display: block;
       width: 100%;
@@ -52,7 +47,6 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-
     form button {
       background: #2e8b57;
       color: white;
@@ -62,7 +56,16 @@
       border-radius: 4px;
       margin-top: 10px;
     }
-
+    .pay-now {
+      background: #0070ba;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
     .warning {
       background-color: #fff3cd;
       color: #856404;
@@ -71,13 +74,11 @@
       border: 1px solid #ffeeba;
       border-radius: 4px;
     }
-
     .no-returns {
       color: red;
       font-weight: bold;
       margin-top: 10px;
     }
-
     .cart-total {
       font-size: 1.2em;
       margin-top: 20px;
@@ -102,10 +103,8 @@
 
   <form action="https://formspree.io/f/mvgazbjw" method="POST" onsubmit="prepareSubmission(event)">
     <h2>Shipping Information</h2>
-
     <input type="text" name="firstName" placeholder="First Name" required />
     <input type="text" name="lastName" placeholder="Last Name" required />
-
     <label for="state">State</label>
     <select name="state" id="state" required>
       <option value="">Select your state</option>
@@ -126,16 +125,15 @@
       <option>Virginia</option><option>Washington</option><option>West Virginia</option>
       <option>Wisconsin</option><option>Wyoming</option>
     </select>
-
     <input type="text" name="street" placeholder="Street Address" required />
     <input type="text" name="postal" placeholder="Postal Code" required />
     <input type="tel" name="phone" placeholder="Phone Number" required />
-
     <div class="no-returns">Note: All sales are final. No returns or refunds.</div>
-
     <input type="hidden" name="cartDetails" id="cartDetails" />
-    <button type="submit">Checkout via PayPal</button>
+    <button type="submit">Submit Details</button>
   </form>
+
+  <button class="pay-now" onclick="payWithPayPal()">Pay Now via PayPal</button>
 </div>
 
 <script>
@@ -180,8 +178,6 @@
   }
 
   function prepareSubmission(event) {
-    event.preventDefault();
-
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const formatted = cart.map(item => {
       const custom = item.customizations || {};
@@ -192,28 +188,17 @@ Color: ${custom.color || ''}
 Symbol: ${custom.symbol || ''}
 `.trim();
     }).join('\n\n');
-
     document.getElementById('cartDetails').value = formatted;
+  }
 
-    const form = event.target;
-    const formData = new FormData(form);
-
-    fetch(form.action, {
-      method: "POST",
-      body: formData,
-      headers: {
-        'Accept': 'application/json'
-      }
-    }).then(response => {
-      if (response.ok) {
-        window.location.href = "https://www.paypal.me/stevenfontana103";
-      } else {
-        alert("There was an issue submitting the form. Please try again.");
-      }
-    }).catch(error => {
-      alert("There was a problem submitting the form.");
-      console.error(error);
+  function payWithPayPal() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let total = 0;
+    cart.forEach(item => {
+      total += item.price * item.quantity;
     });
+    const paypalLink = `https://www.paypal.me/stevenfontana103/${total.toFixed(2)}`;
+    window.location.href = paypalLink;
   }
 
   loadCart();
@@ -221,6 +206,7 @@ Symbol: ${custom.symbol || ''}
 
 </body>
 </html>
+
 
 </body>
 </html>
