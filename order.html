@@ -88,6 +88,13 @@
     .back-link a:hover {
       text-decoration: underline;
     }
+
+    .no-returns {
+      font-size: 0.9em;
+      color: gray;
+      margin-top: 10px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -111,14 +118,38 @@
       </select>
     </div>
 
+    <!-- Top Line of Text (Required) -->
     <div class="form-group">
-      <label for="text">Text for Nameplate:</label>
-      <input type="text" name="Text" id="text" required placeholder="e.g. John Smith">
+      <label for="topText">Top Line of Text:</label>
+      <input type="text" name="TopText" id="topText" required placeholder="Text for top line">
+    </div>
+
+    <!-- Bottom Line of Text (Required) -->
+    <div class="form-group">
+      <label for="bottomText">Bottom Line of Text:</label>
+      <input type="text" name="BottomText" id="bottomText" required placeholder="Text for bottom line">
+    </div>
+
+    <!-- Special Symbol Selection -->
+    <div class="form-group">
+      <label for="symbol">Choose a Symbol for the Left:</label>
+      <select name="Symbol" id="symbol">
+        <option value="">-- Select Symbol --</option>
+        <option value="Instagram">Instagram</option>
+        <option value="YouTube">YouTube</option>
+        <option value="Pen">Pen</option>
+      </select>
     </div>
 
     <div class="form-group">
       <label for="notes">Additional Notes (optional):</label>
       <textarea name="Notes" id="notes" placeholder="Anything else we should know?"></textarea>
+    </div>
+
+    <!-- New Address Field -->
+    <div class="form-group">
+      <label for="address">Shipping Address:</label>
+      <input type="text" name="Address" id="address" required placeholder="Enter your shipping address">
     </div>
 
     <div class="btn-container">
@@ -129,6 +160,11 @@
     </div>
   </form>
 
+  <!-- No Returns Notice -->
+  <div class="no-returns">
+    <p><strong>Note:</strong> All sales are final. No returns or exchanges.</p>
+  </div>
+
   <div class="back-link">
     <p><a href="index.html">← Back to Homepage</a></p>
   </div>
@@ -136,3 +172,4 @@
 
 </body>
 </html>
+
