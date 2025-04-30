@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CSPrints - Cart</title>
+  <title>Nametag Product - CSPrints</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,213 +11,182 @@
       margin: 0;
       padding: 0;
     }
+
     header {
       background: #20232a;
       color: white;
       padding: 20px;
       text-align: center;
     }
+
     .container {
       max-width: 800px;
-      margin: auto;
-      padding: 20px;
-    }
-    .cart-item {
+      margin: 30px auto;
       background: white;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ddd;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 20px;
+      border-radius: 8px;
     }
-    .cart-item button {
-      background-color: #ff4d4d;
-      border: none;
-      color: white;
-      padding: 6px 10px;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-    form input, form select {
-      display: block;
+
+    img {
       width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      max-width: 400px;
+      display: block;
+      margin: auto;
     }
-    form button {
-      background: #2e8b57;
-      color: white;
-      border: none;
-      padding: 12px;
-      cursor: pointer;
-      border-radius: 4px;
-      margin-top: 10px;
+
+    .image-gallery {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      margin-top: 20px;
     }
-    .pay-now {
-      background: #0070ba;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 4px;
-      font-size: 16px;
+
+    .image-gallery img {
+      flex-shrink: 0;
+      width: 300px;
+      height: auto;
       cursor: pointer;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
       margin-top: 15px;
     }
-    .warning {
-      background-color: #fff3cd;
-      color: #856404;
+
+    input, select, button {
+      width: 100%;
       padding: 10px;
-      margin: 20px 0;
-      border: 1px solid #ffeeba;
-      border-radius: 4px;
+      margin-top: 5px;
+      box-sizing: border-box;
     }
-    .no-returns {
-      color: red;
+
+    .cart-link {
+      text-align: right;
+      padding: 10px 20px;
+    }
+
+    .cart-link a {
+      text-decoration: none;
+      color: #2e8b57;
       font-weight: bold;
-      margin-top: 10px;
-    }
-    .cart-total {
-      font-size: 1.2em;
-      margin-top: 20px;
-      font-weight: bold;
-    }
-    .instructions {
-      margin: 20px 0;
-      padding: 15px;
-      background-color: #e3f7ff;
-      border: 1px solid #b3e0f7;
-      border-radius: 5px;
     }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>Your Cart</h1>
+  <h1>Nametag Product</h1>
 </header>
 
+<div class="cart-link">
+  🛒 <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+</div>
+
 <div class="container">
-  <div id="cart-items"></div>
-  <div class="cart-total" id="cart-total"></div>
-  <button onclick="clearCart()">Clear Cart</button>
+  <h2>Custom Nametag</h2>
+  <p>Personalized nametag printed in high-quality plastic. Customize with your color, text, and optional symbol.</p>
+  <p><strong>Price:</strong> $5.00</p>
 
-  <div class="warning">
-    We only ship within the contiguous United States. We do not ship to Alaska or Hawaii.
+  <label for="color">Choose a color:</label>
+  <select id="color" required>
+    <option value="">Select a color</option>
+    <option value="Red">Red</option>
+    <option value="Blue">Blue</option>
+    <option value="Black">Black</option>
+  </select>
+
+  <label for="size">Choose a size:</label>
+  <select id="size" required>
+    <option value="">Select a size</option>
+    <option value="Small">Small</option>
+    <option value="Medium">Medium</option>
+    <option value="Large">Large</option>
+  </select>
+
+  <label for="topText">Top text:</label>
+  <input type="text" id="topText" placeholder="Enter top text" required />
+
+  <label for="bottomText">Bottom text:</label>
+  <input type="text" id="bottomText" placeholder="Enter bottom text" required />
+
+  <label for="symbol">Choose a symbol:</label>
+  <select id="symbol">
+    <option value="None">None</option>
+    <option value="Pencil">Pencil</option>
+    <option value="YouTube">YouTube</option>
+    <option value="Instagram">Instagram</option>
+  </select>
+
+  <button onclick="addToCart()">Add to Cart</button>
+
+  <h3>Product Images</h3>
+  <div class="image-gallery">
+    <img src="https://i.imgur.com/T5h9EOO.jpeg" alt="Nametag Image 1">
+    <img src="https://i.imgur.com/M363cPV.jpeg" alt="Nametag Image 2">
+    <img src="https://i.imgur.com/6b794d3e-6102-4733-b4c8-be70197126db.jpeg" alt="Nametag Image 3">
   </div>
-
-  <!-- Added instructions for the user -->
-  <div class="instructions">
-    <p><strong>Important:</strong> To proceed with your purchase, please follow these steps:</p>
-    <ul>
-      <li>1. Fill in your shipping details and click "Submit Shipping Info".</li>
-      <li>2. After submitting the shipping info, click the "Pay Now via PayPal" button to complete your payment.</li>
-    </ul>
-  </div>
-
-  <form action="https://formspree.io/f/mvgazbjw" method="POST" onsubmit="prepareSubmission(event)">
-    <h2>Shipping Information</h2>
-    <input type="text" name="firstName" placeholder="First Name" required />
-    <input type="text" name="lastName" placeholder="Last Name" required />
-    <label for="state">State</label>
-    <select name="state" id="state" required>
-      <option value="">Select your state</option>
-      <option>Alabama</option><option>Arizona</option><option>Arkansas</option>
-      <option>California</option><option>Colorado</option><option>Connecticut</option>
-      <option>Delaware</option><option>Florida</option><option>Georgia</option>
-      <option>Idaho</option><option>Illinois</option><option>Indiana</option>
-      <option>Iowa</option><option>Kansas</option><option>Kentucky</option>
-      <option>Louisiana</option><option>Maine</option><option>Maryland</option>
-      <option>Massachusetts</option><option>Michigan</option><option>Minnesota</option>
-      <option>Mississippi</option><option>Missouri</option><option>Nebraska</option>
-      <option>Nevada</option><option>New Hampshire</option><option>New Jersey</option>
-      <option>New Mexico</option><option>New York</option><option>North Carolina</option>
-      <option>North Dakota</option><option>Ohio</option><option>Oklahoma</option>
-      <option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option>
-      <option>South Carolina</option><option>South Dakota</option><option>Tennessee</option>
-      <option>Texas</option><option>Utah</option><option>Vermont</option>
-      <option>Virginia</option><option>Washington</option><option>West Virginia</option>
-      <option>Wisconsin</option><option>Wyoming</option>
-    </select>
-    <input type="text" name="street" placeholder="Street Address" required />
-    <input type="text" name="postal" placeholder="Postal Code" required />
-    <input type="tel" name="phone" placeholder="Phone Number" required />
-    <div class="no-returns">Note: All sales are final. No returns or refunds.</div>
-    <input type="hidden" name="cartDetails" id="cartDetails" />
-    <button type="submit">Submit Shipping Info</button>
-  </form>
-
-  <button class="pay-now" onclick="payWithPayPal()">Pay Now via PayPal</button>
 </div>
 
 <script>
-  function loadCart() {
+  function updateCartCount() {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const container = document.getElementById('cart-items');
-    const totalDisplay = document.getElementById('cart-total');
-    container.innerHTML = '';
-    let total = 0;
-
-    cart.forEach((item, index) => {
-      const div = document.createElement('div');
-      div.className = 'cart-item';
-      const custom = item.customizations ? `
-        <br>Top Text: ${item.customizations.topText || ''} 
-        <br>Bottom Text: ${item.customizations.bottomText || ''} 
-        <br>Color: ${item.customizations.color || ''} 
-        <br>Symbol: ${item.customizations.symbol || ''}
-      ` : '';
-      div.innerHTML = `
-        ${item.title} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}
-        ${custom}
-        <button onclick="removeItem(${index})">Remove</button>
-      `;
-      container.appendChild(div);
-      total += item.price * item.quantity;
-    });
-
-    totalDisplay.textContent = `Total: $${total.toFixed(2)}`;
+    const count = cart.reduce((total, item) => total + item.quantity, 0);
+    document.getElementById('cart-count').textContent = count;
   }
 
-  function removeItem(index) {
+  function addToCart() {
+    const color = document.getElementById('color').value;
+    const size = document.getElementById('size').value;
+    const topText = document.getElementById('topText').value.trim();
+    const bottomText = document.getElementById('bottomText').value.trim();
+    const symbol = document.getElementById('symbol').value;
+
+    if (!color || !topText || !bottomText || !size) {
+      alert("Please fill out all required fields.");
+      return;
+    }
+
+    const product = {
+      id: "nametag",
+      title: "Nametag Product",
+      price: 5.00,
+      quantity: 1,
+      color: color,
+      size: size,
+      topText: topText,
+      bottomText: bottomText,
+      symbol: symbol
+    };
+
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    cart.splice(index, 1);
+
+    // Group by all customizations
+    const existing = cart.find(item =>
+      item.id === product.id &&
+      item.color === color &&
+      item.size === size &&
+      item.topText === topText &&
+      item.bottomText === bottomText &&
+      item.symbol === symbol
+    );
+
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push(product);
+    }
+
     localStorage.setItem('cart', JSON.stringify(cart));
-    loadCart();
+    updateCartCount();
+    alert("Nametag added to cart!");
   }
 
-  function clearCart() {
-    localStorage.removeItem('cart');
-    loadCart();
-  }
-
-  function prepareSubmission(event) {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const formatted = cart.map(item => {
-      const custom = item.customizations || {};
-      return `${item.title} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}
-Top Text: ${custom.topText || ''}
-Bottom Text: ${custom.bottomText || ''}
-Color: ${custom.color || ''}
-Symbol: ${custom.symbol || ''}`
-      .trim();
-    }).join('\n\n');
-    document.getElementById('cartDetails').value = formatted;
-  }
-
-  function payWithPayPal() {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    let total = 0;
-    cart.forEach(item => {
-      total += item.price * item.quantity;
-    });
-    const paypalLink = `https://www.paypal.me/stevenfontana103/${total.toFixed(2)}`;
-    window.location.href = paypalLink;
-  }
-
-  loadCart();
+  updateCartCount();
 </script>
 
 </body>
