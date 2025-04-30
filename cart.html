@@ -101,37 +101,25 @@
     We only ship within the contiguous United States. We do not ship to Alaska or Hawaii.
   </div>
 
-  <form id="checkout-form" action="https://formspree.io/f/mvgazbjw" method="POST" onsubmit="prepareAndSubmitForm(event)">
+  <form id="shipping-form" onsubmit="prepareSubmission(event)">
     <h2>Shipping Information</h2>
     <input type="text" name="firstName" placeholder="First Name" required />
     <input type="text" name="lastName" placeholder="Last Name" required />
     <label for="state">State</label>
     <select name="state" id="state" required>
       <option value="">Select your state</option>
-      <option>Alabama</option><option>Arizona</option><option>Arkansas</option>
-      <option>California</option><option>Colorado</option><option>Connecticut</option>
-      <option>Delaware</option><option>Florida</option><option>Georgia</option>
-      <option>Idaho</option><option>Illinois</option><option>Indiana</option>
-      <option>Iowa</option><option>Kansas</option><option>Kentucky</option>
-      <option>Louisiana</option><option>Maine</option><option>Maryland</option>
-      <option>Massachusetts</option><option>Michigan</option><option>Minnesota</option>
-      <option>Mississippi</option><option>Missouri</option><option>Nebraska</option>
-      <option>Nevada</option><option>New Hampshire</option><option>New Jersey</option>
-      <option>New Mexico</option><option>New York</option><option>North Carolina</option>
-      <option>North Dakota</option><option>Ohio</option><option>Oklahoma</option>
-      <option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option>
-      <option>South Carolina</option><option>South Dakota</option><option>Tennessee</option>
-      <option>Texas</option><option>Utah</option><option>Vermont</option>
-      <option>Virginia</option><option>Washington</option><option>West Virginia</option>
-      <option>Wisconsin</option><option>Wyoming</option>
+      <!-- Add states here -->
+      <option>California</option>
+      <option>New York</option>
+      <!-- Other states -->
     </select>
     <input type="text" name="street" placeholder="Street Address" required />
     <input type="text" name="postal" placeholder="Postal Code" required />
     <input type="tel" name="phone" placeholder="Phone Number" required />
     <div class="no-returns">Note: All sales are final. No returns or refunds.</div>
-    <input type="hidden" name="cartDetails" id="cartDetails" />
-    <button type="submit">Submit Details and Pay Now</button>
+    <button type="button" class="pay-now" onclick="payWithPayPal()">Pay Now via PayPal</button>
   </form>
+
 </div>
 
 <script>
@@ -145,12 +133,7 @@
     cart.forEach((item, index) => {
       const div = document.createElement('div');
       div.className = 'cart-item';
-      const custom = item.customizations ? `
-        <br>Top Text: ${item.customizations.topText || ''} 
-        <br>Bottom Text: ${item.customizations.bottomText || ''} 
-        <br>Color: ${item.customizations.color || ''} 
-        <br>Symbol: ${item.customizations.symbol || ''}
-      ` : '';
+      const custom = item.customizations ? `Top Text: ${item.customizations.topText || ''}` : '';
       div.innerHTML = `
         ${item.title} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}
         ${custom}
@@ -175,41 +158,19 @@
     loadCart();
   }
 
-  function prepareAndSubmitForm(event) {
-    event.preventDefault(); // Prevent default form submission
+  function prepareSubmission(event) {
+    event.preventDefault();
+    // You can still submit form details to your server or any service like Formspree if needed
+  }
 
+  function payWithPayPal() {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const formatted = cart.map(item => {
-      const custom = item.customizations || {};
-      return `${item.title} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}
-Top Text: ${custom.topText || ''}
-Bottom Text: ${custom.bottomText || ''}
-Color: ${custom.color || ''}
-Symbol: ${custom.symbol || ''}
-`.trim();
-    }).join('\n\n');
-    document.getElementById('cartDetails').value = formatted;
-
-    // Submit the form to Formspree
-    const form = document.getElementById('checkout-form');
-    fetch(form.action, {
-      method: 'POST',
-      body: new FormData(form)
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Redirect to PayPal after successful form submission
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      let total = 0;
-      cart.forEach(item => {
-        total += item.price * item.quantity;
-      });
-      const paypalLink = `https://www.paypal.me/stevenfontana103/${total.toFixed(2)}`;
-      window.location.href = paypalLink;
-    })
-    .catch(error => {
-      alert('There was a problem with your submission. Please try again later.');
+    let total = 0;
+    cart.forEach(item => {
+      total += item.price * item.quantity;
     });
+    const paypalLink = `https://www.paypal.me/stevenfontana103/${total.toFixed(2)}`;
+    window.location.href = paypalLink;
   }
 
   loadCart();
