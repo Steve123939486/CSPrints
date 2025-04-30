@@ -75,6 +75,19 @@
       color: #2e8b57;
       font-weight: bold;
     }
+
+    .total {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .shipping-cost {
+      margin-top: 10px;
+      font-size: 16px;
+      color: green;
+    }
   </style>
 </head>
 <body>
@@ -130,70 +143,101 @@
     <option value="Instagram">Instagram</option>
   </select>
 
+  <!-- Shipping Information Form -->
+  <label for="shippingState">Select State for Shipping:</label>
+  <select id="shippingState" onchange="updateShippingCost()">
+    <option value="">Select State</option>
+    <option value="Alabama">Alabama</option>
+    <option value="Arizona">Arizona</option>
+    <option value="Arkansas">Arkansas</option>
+    <option value="California">California</option>
+    <option value="Colorado">Colorado</option>
+    <option value="Connecticut">Connecticut</option>
+    <option value="Delaware">Delaware</option>
+    <option value="Florida">Florida</option>
+    <option value="Georgia">Georgia</option>
+    <option value="Idaho">Idaho</option>
+    <option value="Illinois">Illinois</option>
+    <option value="Indiana">Indiana</option>
+    <option value="Iowa">Iowa</option>
+    <option value="Kansas">Kansas</option>
+    <option value="Kentucky">Kentucky</option>
+    <option value="Louisiana">Louisiana</option>
+    <option value="Maine">Maine</option>
+    <option value="Maryland">Maryland</option>
+    <option value="Massachusetts">Massachusetts</option>
+    <option value="Michigan">Michigan</option>
+    <option value="Minnesota">Minnesota</option>
+    <option value="Mississippi">Mississippi</option>
+    <option value="Missouri">Missouri</option>
+    <option value="Montana">Montana</option>
+    <option value="Nebraska">Nebraska</option>
+    <option value="Nevada">Nevada</option>
+    <option value="New Hampshire">New Hampshire</option>
+    <option value="New Jersey">New Jersey</option>
+    <option value="New Mexico">New Mexico</option>
+    <option value="New York">New York</option>
+    <option value="North Carolina">North Carolina</option>
+    <option value="North Dakota">North Dakota</option>
+    <option value="Ohio">Ohio</option>
+    <option value="Oklahoma">Oklahoma</option>
+    <option value="Oregon">Oregon</option>
+    <option value="Pennsylvania">Pennsylvania</option>
+    <option value="Rhode Island">Rhode Island</option>
+    <option value="South Carolina">South Carolina</option>
+    <option value="South Dakota">South Dakota</option>
+    <option value="Tennessee">Tennessee</option>
+    <option value="Texas">Texas</option>
+    <option value="Utah">Utah</option>
+    <option value="Vermont">Vermont</option>
+    <option value="Virginia">Virginia</option>
+    <option value="Washington">Washington</option>
+    <option value="West Virginia">West Virginia</option>
+    <option value="Wisconsin">Wisconsin</option>
+    <option value="Wyoming">Wyoming</option>
+  </select>
+
+  <div class="shipping-cost" id="shippingCost">Shipping Cost: $0.00</div>
+
   <button onclick="addToCart()">Add to Cart</button>
+
+  <div class="total" id="totalPrice">Total Price: $5.00</div>
 </div>
 
 <script>
-  function updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const count = cart.reduce((total, item) => total + item.quantity, 0);
-    document.getElementById('cart-count').textContent = count;
-  }
+  const basePrice = 5.00; // Base price of the product
+  let shippingCost = 0; // Initialize shipping cost
 
-  function addToCart() {
-    const color = document.getElementById('color').value;
-    const size = document.getElementById('size').value;
-    const topText = document.getElementById('topText').value.trim();
-    const bottomText = document.getElementById('bottomText').value.trim();
-    const symbol = document.getElementById('symbol').value;
-
-    if (!color || !topText || !bottomText || !size) {
-      alert("Please fill out all required fields.");
-      return;
-    }
-
-    const product = {
-      id: "nametag",
-      title: "Nametag Product",
-      price: 5.00,
-      quantity: 1,
-      color: color,
-      size: size,
-      topText: topText,
-      bottomText: bottomText,
-      symbol: symbol
-    };
-
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-    // Group by all customizations
-    const existing = cart.find(item =>
-      item.id === product.id &&
-      item.color === color &&
-      item.size === size &&
-      item.topText === topText &&
-      item.bottomText === bottomText &&
-      item.symbol === symbol
-    );
-
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      cart.push(product);
-    }
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-    alert("Nametag added to cart!");
-  }
-
-  updateCartCount();
-</script>
-
-</body>
-</html>
-
-</html>
-
-</html>
-
+  function updateShippingCost() {
+    const state = document.getElementById('shippingState').value;
+    
+    // Assign shipping cost based on the selected state
+    const shippingCosts = {
+      'Alabama': 5.00,
+      'Arizona': 4.00,
+      'Arkansas': 4.50,
+      'California': 5.00,
+      'Colorado': 4.00,
+      'Connecticut': 4.50,
+      'Delaware': 5.50,
+      'Florida': 6.00,
+      'Georgia': 5.00,
+      'Idaho': 4.50,
+      'Illinois': 5.00,
+      'Indiana': 4.50,
+      'Iowa': 4.50,
+      'Kansas': 4.50,
+      'Kentucky': 5.00,
+      'Louisiana': 5.00,
+      'Maine': 5.50,
+      'Maryland': 4.50,
+      'Massachusetts': 4.50,
+      'Michigan': 4.00,
+      'Minnesota': 4.50,
+      'Mississippi': 5.00,
+      'Missouri': 4.50,
+      'Montana': 6.00,
+      'Nebraska': 4.50,
+      'Nevada': 5.00,
+      'New Hampshire': 5.50,
+      'New Jersey': 4.
