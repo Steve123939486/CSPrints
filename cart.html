@@ -101,7 +101,7 @@
     We only ship within the contiguous United States. We do not ship to Alaska or Hawaii.
   </div>
 
-  <form action="https://formspree.io/f/mvgazbjw" method="POST" onsubmit="prepareSubmission(event)">
+  <form action="https://formspree.io/f/mvgazbjw" method="POST" id="checkout-form" onsubmit="prepareSubmission(event)">
     <h2>Shipping Information</h2>
     <input type="text" name="firstName" placeholder="First Name" required />
     <input type="text" name="lastName" placeholder="Last Name" required />
@@ -130,10 +130,8 @@
     <input type="tel" name="phone" placeholder="Phone Number" required />
     <div class="no-returns">Note: All sales are final. No returns or refunds.</div>
     <input type="hidden" name="cartDetails" id="cartDetails" />
-    <button type="submit">Submit Details</button>
+    <button type="submit" id="submit-button">Submit & Pay</button>
   </form>
-
-  <button class="pay-now" onclick="payWithPayPal()">Pay Now via PayPal</button>
 </div>
 
 <script>
@@ -189,9 +187,9 @@ Symbol: ${custom.symbol || ''}
 `.trim();
     }).join('\n\n');
     document.getElementById('cartDetails').value = formatted;
-  }
 
-  function payWithPayPal() {
+    // After preparing the form data, proceed to PayPal
+    event.preventDefault(); // Prevent form submission
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     let total = 0;
     cart.forEach(item => {
@@ -206,3 +204,4 @@ Symbol: ${custom.symbol || ''}
 
 </body>
 </html>
+
