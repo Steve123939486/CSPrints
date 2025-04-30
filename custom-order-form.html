@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom 3D Print Order</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+        form {
+            width: 100%;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Custom 3D Print Order</h1>
+        <form action="https://formspree.io/f/your-form-id" method="POST" onsubmit="setPayPalLink();">
+            <label for="color">Choose a Color:</label>
+            <select id="color" name="Color">
+                <option value="black" data-price="20">Black ($20)</option>
+                <option value="white" data-price="20">White ($20)</option>
+                <option value="red" data-price="20">Red ($20)</option>
+                <option value="blue" data-price="20">Blue ($20)</option>
+                <option value="green" data-price="20">Green ($20)</option>
+                <option value="gold" data-price="25">Gold ($25)</option>
+                <option value="silver" data-price="25">Silver ($25)</option>
+            </select>
+
+            <label for="text">Nameplate Text:</label>
+            <input type="text" id="text" name="Nameplate Text" required>
+
+            <label for="notes">Additional Notes:</label>
+            <textarea id="notes" name="Notes"></textarea>
+
+            <input type="hidden" id="paypal-link" name="_next" value="https://www.paypal.me/YourUsername/20">
+
+            <input type="hidden" name="_captcha" value="false">
+
+            <button type="submit">Submit and Pay</button>
+        </form>
+    </div>
+
+    <script>
+        function setPayPalLink() {
+            var color = document.getElementById('color');
+            var selectedColor = color.options[color.selectedIndex];
+            var price = selectedColor.getAttribute('data-price');
+            var paypalLink = 'https://www.paypal.me/YourUsername/' + price;
+            document.getElementById('paypal-link').value = paypalLink;
+        }
+    </script>
+
+    <footer>
+        <a href="index.html">Go Back to Home</a>
+    </footer>
+
+</body>
+</html>
