@@ -47,16 +47,7 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-    form button {
-      background: #2e8b57;
-      color: white;
-      border: none;
-      padding: 12px;
-      cursor: pointer;
-      border-radius: 4px;
-      margin-top: 10px;
-    }
-    .pay-now {
+    .submit-pay {
       background: #0070ba;
       color: white;
       padding: 12px;
@@ -65,6 +56,11 @@
       font-size: 16px;
       cursor: pointer;
       margin-top: 15px;
+    }
+    .cart-total {
+      font-size: 1.2em;
+      margin-top: 20px;
+      font-weight: bold;
     }
     .warning {
       background-color: #fff3cd;
@@ -78,11 +74,6 @@
       color: red;
       font-weight: bold;
       margin-top: 10px;
-    }
-    .cart-total {
-      font-size: 1.2em;
-      margin-top: 20px;
-      font-weight: bold;
     }
   </style>
 </head>
@@ -101,25 +92,37 @@
     We only ship within the contiguous United States. We do not ship to Alaska or Hawaii.
   </div>
 
-  <form id="shipping-form" onsubmit="prepareSubmission(event)">
+  <form id="checkout-form" onsubmit="handleSubmit(event)">
     <h2>Shipping Information</h2>
     <input type="text" name="firstName" placeholder="First Name" required />
     <input type="text" name="lastName" placeholder="Last Name" required />
     <label for="state">State</label>
     <select name="state" id="state" required>
       <option value="">Select your state</option>
-      <!-- Add states here -->
-      <option>California</option>
-      <option>New York</option>
-      <!-- Other states -->
+      <option>Alabama</option><option>Arizona</option><option>Arkansas</option>
+      <option>California</option><option>Colorado</option><option>Connecticut</option>
+      <option>Delaware</option><option>Florida</option><option>Georgia</option>
+      <option>Idaho</option><option>Illinois</option><option>Indiana</option>
+      <option>Iowa</option><option>Kansas</option><option>Kentucky</option>
+      <option>Louisiana</option><option>Maine</option><option>Maryland</option>
+      <option>Massachusetts</option><option>Michigan</option><option>Minnesota</option>
+      <option>Mississippi</option><option>Missouri</option><option>Nebraska</option>
+      <option>Nevada</option><option>New Hampshire</option><option>New Jersey</option>
+      <option>New Mexico</option><option>New York</option><option>North Carolina</option>
+      <option>North Dakota</option><option>Ohio</option><option>Oklahoma</option>
+      <option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option>
+      <option>South Carolina</option><option>South Dakota</option><option>Tennessee</option>
+      <option>Texas</option><option>Utah</option><option>Vermont</option>
+      <option>Virginia</option><option>Washington</option><option>West Virginia</option>
+      <option>Wisconsin</option><option>Wyoming</option>
     </select>
     <input type="text" name="street" placeholder="Street Address" required />
     <input type="text" name="postal" placeholder="Postal Code" required />
     <input type="tel" name="phone" placeholder="Phone Number" required />
+    <input type="hidden" name="cartDetails" id="cartDetails" />
     <div class="no-returns">Note: All sales are final. No returns or refunds.</div>
-    <button type="button" class="pay-now" onclick="payWithPayPal()">Pay Now via PayPal</button>
+    <button type="submit" class="submit-pay">Submit Info & Pay with PayPal</button>
   </form>
-
 </div>
 
 <script>
@@ -133,7 +136,12 @@
     cart.forEach((item, index) => {
       const div = document.createElement('div');
       div.className = 'cart-item';
-      const custom = item.customizations ? `Top Text: ${item.customizations.topText || ''}` : '';
+      const custom = item.customizations ? `
+        <br>Top Text: ${item.customizations.topText || ''} 
+        <br>Bottom Text: ${item.customizations.bottomText || ''} 
+        <br>Color: ${item.customizations.color || ''} 
+        <br>Symbol: ${item.customizations.symbol || ''}
+      ` : '';
       div.innerHTML = `
         ${item.title} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}
         ${custom}
@@ -146,6 +154,11 @@
     totalDisplay.textContent = `Total: $${total.toFixed(2)}`;
   }
 
+  function clearCart() {
+    localStorage.removeItem('cart');
+    loadCart();
+  }
+
   function removeItem(index) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     cart.splice(index, 1);
@@ -153,24 +166,44 @@
     loadCart();
   }
 
-  function clearCart() {
-    localStorage.removeItem('cart');
-    loadCart();
-  }
-
-  function prepareSubmission(event) {
+  function handleSubmit(event) {
     event.preventDefault();
-    // You can still submit form details to your server or any service like Formspree if needed
-  }
-
-  function payWithPayPal() {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    if (cart.length === 0) {
+      alert("Your cart is empty.");
+      return;
+    }
+
     let total = 0;
-    cart.forEach(item => {
+    const formattedCart = cart.map(item => {
       total += item.price * item.quantity;
+      const c = item.customizations || {};
+      return `${item.title} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}
+Top Text: ${c.topText || ''}
+Bottom Text: ${c.bottomText || ''}
+Color: ${c.color || ''}
+Symbol: ${c.symbol || ''}`;
+    }).join('\n\n');
+
+    document.getElementById('cartDetails').value = formattedCart;
+
+    const form = document.getElementById('checkout-form');
+    const formData = new FormData(form);
+
+    fetch('https://script.google.com/macros/s/AKfycbyw7Vr6t_rL-nl7bdgpJ98NUC91n-Ixy2ybJIMA_baKtMj5JmjC6XS_tmnzAFcID9S2/exec', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      if (response.ok) {
+        window.location.href = `https://www.paypal.me/stevenfontana103/${total.toFixed(2)}`;
+      } else {
+        alert("There was a problem submitting your order. Please try again.");
+      }
+    })
+    .catch(() => {
+      alert("Error submitting the form. Please check your internet connection.");
     });
-    const paypalLink = `https://www.paypal.me/stevenfontana103/${total.toFixed(2)}`;
-    window.location.href = paypalLink;
   }
 
   loadCart();
