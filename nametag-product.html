@@ -240,4 +240,73 @@
       'Nebraska': 4.50,
       'Nevada': 5.00,
       'New Hampshire': 5.50,
-      'New Jersey': 4.
+      'New Jersey': 4.50,
+      'New Mexico': 5.00,
+      'New York': 7.00,
+      'North Carolina': 5.00,
+      'North Dakota': 5.50,
+      'Ohio': 4.50,
+      'Oklahoma': 5.00,
+      'Oregon': 5.00,
+      'Pennsylvania': 5.00,
+      'Rhode Island': 5.50,
+      'South Carolina': 5.00,
+      'South Dakota': 5.00,
+      'Tennessee': 5.00,
+      'Texas': 4.00,
+      'Utah': 4.50,
+      'Vermont': 5.50,
+      'Virginia': 4.50,
+      'Washington': 5.00,
+      'West Virginia': 5.50,
+      'Wisconsin': 4.50,
+      'Wyoming': 6.00
+    };
+
+    shippingCost = shippingCosts[state] || 0; // Default to $0 if no state is selected
+
+    // Update shipping cost display
+    document.getElementById('shippingCost').textContent = `Shipping Cost: $${shippingCost.toFixed(2)}`;
+
+    // Update total price display
+    const totalPrice = basePrice + shippingCost;
+    document.getElementById('totalPrice').textContent = `Total Price: $${totalPrice.toFixed(2)}`;
+  }
+
+  function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const count = cart.reduce((total, item) => total + item.quantity, 0);
+    document.getElementById('cart-count').textContent = count;
+  }
+
+  function addToCart() {
+    const color = document.getElementById('color').value;
+    const size = document.getElementById('size').value;
+    const topText = document.getElementById('topText').value;
+    const bottomText = document.getElementById('bottomText').value;
+    const symbol = document.getElementById('symbol').value;
+
+    // Add the selected item to the cart (save it in localStorage)
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart.push({
+      color,
+      size,
+      topText,
+      bottomText,
+      symbol,
+      quantity: 1,
+      price: basePrice + shippingCost
+    });
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    updateCartCount();
+  }
+
+  // Initialize the cart count when the page loads
+  updateCartCount();
+</script>
+
+</body>
+</html>
+
