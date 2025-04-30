@@ -74,12 +74,8 @@
     }
 
     .cart-count {
-      background-color: #ff5722;
-      color: white;
-      border-radius: 50%;
-      padding: 5px 10px;
-      font-size: 1em;
-      margin-left: 10px;
+      font-size: 1.2em;
+      color: #e74c3c;
     }
   </style>
 </head>
@@ -98,8 +94,7 @@
   </nav>
 
   <div class="cart-link">
-    🛒 <a href="cart.html">View Cart</a>
-    <span class="cart-count" id="cart-count">0</span> <!-- Cart item count -->
+    🛒 <a href="cart.html">View Cart <span class="cart-count">0</span></a>
   </div>
 
   <section class="hero">
@@ -112,10 +107,14 @@
   </footer>
 
   <script>
+    // Cart items counter
     function updateCartCount() {
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
       const itemCount = cart.reduce((acc, item) => acc + item.quantity, 0);
-      document.getElementById('cart-count').textContent = itemCount;
+      const cartCountElement = document.querySelector('.cart-count');
+      if (cartCountElement) {
+        cartCountElement.textContent = itemCount;
+      }
     }
 
     updateCartCount(); // Update cart count on page load
