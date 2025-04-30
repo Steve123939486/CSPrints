@@ -61,6 +61,26 @@
       color: #2e8b57;
       font-weight: bold;
     }
+
+    /* Gallery Styles */
+    .image-gallery {
+      display: flex;
+      overflow-x: scroll;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .image-gallery img {
+      width: 300px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .image-gallery img:hover {
+      transform: scale(1.1);
+    }
   </style>
 </head>
 <body>
@@ -74,11 +94,27 @@
 </div>
 
 <div class="container">
-  <img src="https://via.placeholder.com/400x200.png?text=Nametag" alt="Nametag Image">
+  <!-- Image Gallery with Scroll (3 Images) -->
+  <div class="image-gallery">
+    <img src="https://via.placeholder.com/300" alt="Image 1">
+    <img src="https://via.placeholder.com/300" alt="Image 2">
+    <img src="https://via.placeholder.com/300" alt="Image 3">
+  </div>
+
   <h2>Custom Nametag</h2>
   <p>Personalized nametag printed in high-quality plastic. Customize with your color, text, and optional symbol.</p>
   <p><strong>Price:</strong> $5.00</p>
 
+  <!-- Size Selection Dropdown -->
+  <label for="size">Choose a size</label>
+  <select id="size" required>
+    <option value="">Select a size</option>
+    <option value="small">Small</option>
+    <option value="medium">Medium</option>
+    <option value="large">Large</option>
+  </select>
+
+  <!-- Color Selection Dropdown -->
   <label for="color">Choose a color:</label>
   <select id="color" required>
     <option value="">Select a color</option>
@@ -87,12 +123,14 @@
     <option value="Black">Black</option>
   </select>
 
+  <!-- Text Inputs for Customization -->
   <label for="topText">Top text:</label>
   <input type="text" id="topText" placeholder="Enter top text" required />
 
   <label for="bottomText">Bottom text:</label>
   <input type="text" id="bottomText" placeholder="Enter bottom text" required />
 
+  <!-- Symbol Selection Dropdown -->
   <label for="symbol">Choose a symbol:</label>
   <select id="symbol">
     <option value="None">None</option>
@@ -112,12 +150,13 @@
   }
 
   function addToCart() {
+    const size = document.getElementById('size').value;
     const color = document.getElementById('color').value;
     const topText = document.getElementById('topText').value.trim();
     const bottomText = document.getElementById('bottomText').value.trim();
     const symbol = document.getElementById('symbol').value;
 
-    if (!color || !topText || !bottomText) {
+    if (!size || !color || !topText || !bottomText) {
       alert("Please fill out all required fields.");
       return;
     }
@@ -127,6 +166,7 @@
       title: "Nametag Product",
       price: 5.00,
       quantity: 1,
+      size: size,
       color: color,
       topText: topText,
       bottomText: bottomText,
@@ -138,6 +178,7 @@
     // Group by all customizations
     const existing = cart.find(item =>
       item.id === product.id &&
+      item.size === size &&
       item.color === color &&
       item.topText === topText &&
       item.bottomText === bottomText &&
