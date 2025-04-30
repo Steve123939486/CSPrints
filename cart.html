@@ -202,21 +202,21 @@ Symbol: ${custom.symbol || ''}
       method: 'POST',
       body: formData,
     })
-    .then(response => {
-      if (response.ok) {
-        // If form submission is successful, proceed to PayPal
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let total = 0;
-        cart.forEach(item => {
-          total += item.price * item.quantity;
-        });
-        const paypalLink = `https://www.paypal.me/stevenfontana103/${total.toFixed(2)}`;
-        window.location.href = paypalLink;
-      } else {
-        alert('There was a problem submitting your order. Please try again later.');
-      }
+    .then(response => response.json())
+    .then(data => {
+      console.log('Form submitted successfully:', data); // For debugging
+      
+      // If form submission is successful, proceed to PayPal
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      let total = 0;
+      cart.forEach(item => {
+        total += item.price * item.quantity;
+      });
+      const paypalLink = `https://www.paypal.me/stevenfontana103/${total.toFixed(2)}`;
+      window.location.href = paypalLink;
     })
     .catch(error => {
+      console.error('Error submitting form:', error); // For debugging
       alert('There was a problem with your submission. Please try again later.');
     });
   }
