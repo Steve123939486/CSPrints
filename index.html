@@ -61,6 +61,26 @@
       color: white;
       margin-top: 40px;
     }
+
+    .cart-link {
+      text-align: right;
+      padding: 10px 20px;
+    }
+
+    .cart-link a {
+      text-decoration: none;
+      color: #2e8b57;
+      font-weight: bold;
+    }
+
+    .cart-count {
+      background-color: #ff5722;
+      color: white;
+      border-radius: 50%;
+      padding: 5px 10px;
+      font-size: 1em;
+      margin-left: 10px;
+    }
   </style>
 </head>
 <body>
@@ -77,6 +97,11 @@
     <a href="#">Contact</a>
   </nav>
 
+  <div class="cart-link">
+    🛒 <a href="cart.html">View Cart</a>
+    <span class="cart-count" id="cart-count">0</span> <!-- Cart item count -->
+  </div>
+
   <section class="hero">
     <h1>Welcome to CSPrints</h1>
     <p>We bring your ideas to life with high-quality, custom 3D printing. Whether you need personalized nameplates, parts, or prototypes, we’ve got you covered.</p>
@@ -85,6 +110,16 @@
   <footer class="footer">
     &copy; 2025 CSPrints. All rights reserved.
   </footer>
+
+  <script>
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const itemCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+      document.getElementById('cart-count').textContent = itemCount;
+    }
+
+    updateCartCount(); // Update cart count on page load
+  </script>
 
 </body>
 </html>
