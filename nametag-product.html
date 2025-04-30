@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nametag Product - CSPrints</title>
+  <title>CSPrints Shop</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -19,36 +19,47 @@
       text-align: center;
     }
 
-    .container {
-      max-width: 800px;
-      margin: 30px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-    }
-
-    img {
-      width: 100%;
-      max-width: 400px;
-      display: block;
+    .shop-container {
+      max-width: 1200px;
       margin: auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
     }
 
-    h2 {
+    .product {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
       text-align: center;
     }
 
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 15px;
+    .product img {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
     }
 
-    input, select, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      box-sizing: border-box;
+    .product-title {
+      font-size: 1.2em;
+      margin: 10px 0;
+    }
+
+    .product-price {
+      color: #2e8b57;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .product button {
+      background: #2e8b57;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
     }
 
     .cart-link {
@@ -62,142 +73,65 @@
       font-weight: bold;
     }
 
-    /* Gallery Styles */
-    .image-gallery {
-      display: flex;
-      overflow-x: scroll;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .image-gallery img {
-      width: 300px;
-      height: 300px;
+    .product img {
       object-fit: cover;
-      border-radius: 8px;
-      transition: transform 0.3s ease;
-    }
-
-    .image-gallery img:hover {
-      transform: scale(1.1);
+      width: 100%;
+      height: 200px;
     }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>Nametag Product</h1>
+  <h1>CSPrints Shop</h1>
 </header>
 
 <div class="cart-link">
-  🛒 <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+  🛒 <a href="cart.html">View Cart</a> (<span id="cart-count">0</span> items)
 </div>
 
-<div class="container">
-  <!-- Image Gallery with Scroll (3 Images) -->
-  <div class="image-gallery">
-    <img src="https://via.placeholder.com/300" alt="Image 1">
-    <img src="https://via.placeholder.com/300" alt="Image 2">
-    <img src="https://via.placeholder.com/300" alt="Image 3">
-  </div>
-
-  <h2>Custom Nametag</h2>
-  <p>Personalized nametag printed in high-quality plastic. Customize with your color, text, and optional symbol.</p>
-  <p><strong>Price:</strong> $5.00</p>
-
-  <!-- Size Selection Dropdown -->
-  <label for="size">Choose a size</label>
-  <select id="size" required>
-    <option value="">Select a size</option>
-    <option value="small">Small</option>
-    <option value="medium">Medium</option>
-    <option value="large">Large</option>
-  </select>
-
-  <!-- Color Selection Dropdown -->
-  <label for="color">Choose a color:</label>
-  <select id="color" required>
-    <option value="">Select a color</option>
-    <option value="Red">Red</option>
-    <option value="Blue">Blue</option>
-    <option value="Black">Black</option>
-  </select>
-
-  <!-- Text Inputs for Customization -->
-  <label for="topText">Top text:</label>
-  <input type="text" id="topText" placeholder="Enter top text" required />
-
-  <label for="bottomText">Bottom text:</label>
-  <input type="text" id="bottomText" placeholder="Enter bottom text" required />
-
-  <!-- Symbol Selection Dropdown -->
-  <label for="symbol">Choose a symbol:</label>
-  <select id="symbol">
-    <option value="None">None</option>
-    <option value="Pencil">Pencil</option>
-    <option value="YouTube">YouTube</option>
-    <option value="Instagram">Instagram</option>
-  </select>
-
-  <button onclick="addToCart()">Add to Cart</button>
+<div class="shop-container" id="shop">
+  <!-- Products will be injected by JavaScript -->
 </div>
 
 <script>
+  const products = [
+    {
+      id: 1,
+      title: "Nametag - Red",
+      price: 5.00,
+      image: "https://i.imgur.com/QXkvgdf.jpeg",
+      link: "products/nametag-product-page.html"
+    }
+  ];
+
+  const shopContainer = document.getElementById('shop');
+  const cartCount = document.getElementById('cart-count');
+
+  products.forEach(product => {
+    const productEl = document.createElement('div');
+    productEl.className = 'product';
+    productEl.innerHTML = `
+      <img src="${product.image}" alt="${product.title}">
+      <div class="product-title">${product.title}</div>
+      <div class="product-price">$${product.price.toFixed(2)}</div>
+      <a href="${product.link}">
+        <button>View Product</button>
+      </a>
+    `;
+    shopContainer.appendChild(productEl);
+  });
+
+  // Update the cart count based on localStorage
   function updateCartCount() {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const count = cart.reduce((total, item) => total + item.quantity, 0);
-    document.getElementById('cart-count').textContent = count;
+    cartCount.textContent = cart.length;
   }
 
-  function addToCart() {
-    const size = document.getElementById('size').value;
-    const color = document.getElementById('color').value;
-    const topText = document.getElementById('topText').value.trim();
-    const bottomText = document.getElementById('bottomText').value.trim();
-    const symbol = document.getElementById('symbol').value;
-
-    if (!size || !color || !topText || !bottomText) {
-      alert("Please fill out all required fields.");
-      return;
-    }
-
-    const product = {
-      id: "nametag",
-      title: "Nametag Product",
-      price: 5.00,
-      quantity: 1,
-      size: size,
-      color: color,
-      topText: topText,
-      bottomText: bottomText,
-      symbol: symbol
-    };
-
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-    // Group by all customizations
-    const existing = cart.find(item =>
-      item.id === product.id &&
-      item.size === size &&
-      item.color === color &&
-      item.topText === topText &&
-      item.bottomText === bottomText &&
-      item.symbol === symbol
-    );
-
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      cart.push(product);
-    }
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-    alert("Nametag added to cart!");
-  }
-
-  updateCartCount();
+  // Call updateCartCount on page load
+  window.onload = updateCartCount;
 </script>
 
 </body>
 </html>
+
