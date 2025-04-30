@@ -101,7 +101,7 @@
     We only ship within the contiguous United States. We do not ship to Alaska or Hawaii.
   </div>
 
-  <form action="https://formspree.io/f/mvgazbjw" method="POST" id="checkout-form" onsubmit="prepareSubmission(event)">
+  <form id="checkout-form" onsubmit="handleSubmit(event)">
     <h2>Shipping Information</h2>
     <input type="text" name="firstName" placeholder="First Name" required />
     <input type="text" name="lastName" placeholder="Last Name" required />
@@ -187,16 +187,38 @@ Symbol: ${custom.symbol || ''}
 `.trim();
     }).join('\n\n');
     document.getElementById('cartDetails').value = formatted;
+  }
 
-    // After preparing the form data, proceed to PayPal
-    event.preventDefault(); // Prevent form submission
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    let total = 0;
-    cart.forEach(item => {
-      total += item.price * item.quantity;
+  function handleSubmit(event) {
+    event.preventDefault(); // Prevent form from submitting to Formspree directly
+
+    // Prepare the shipping info and cart details for submission
+    prepareSubmission(event);
+
+    // Use Formspree API to submit the form via JavaScript
+    const form = document.getElementById('checkout-form');
+    const formData = new FormData(form);
+    fetch(form.action, {
+      method: 'POST',
+      body: formData,
+    })
+    .then(response => {
+      if (response.ok) {
+        // If form submission is successful, proceed to PayPal
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let total = 0;
+        cart.forEach(item => {
+          total += item.price * item.quantity;
+        });
+        const paypalLink = `https://www.paypal.me/stevenfontana103/${total.toFixed(2)}`;
+        window.location.href = paypalLink;
+      } else {
+        alert('There was a problem submitting your order. Please try again later.');
+      }
+    })
+    .catch(error => {
+      alert('There was a problem with your submission. Please try again later.');
     });
-    const paypalLink = `https://www.paypal.me/stevenfontana103/${total.toFixed(2)}`;
-    window.location.href = paypalLink;
   }
 
   loadCart();
@@ -204,4 +226,3 @@ Symbol: ${custom.symbol || ''}
 
 </body>
 </html>
-
