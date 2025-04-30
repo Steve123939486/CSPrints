@@ -19,72 +19,47 @@
       text-align: center;
     }
 
-    nav {
-      background-color: #61dafb;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      padding: 10px 0;
-    }
-
-    nav a {
-      color: #000;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    .product-details {
-      max-width: 1200px;
-      margin: auto;
-      padding: 20px;
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
       background: white;
+      padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    img {
+      width: 100%;
+      max-width: 400px;
+      display: block;
+      margin: auto;
+    }
+
+    h2 {
       text-align: center;
     }
 
-    .product-details img {
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+
+    input, select, button {
       width: 100%;
-      max-height: 250px;
-      object-fit: cover;
+      padding: 10px;
+      margin-top: 5px;
+      box-sizing: border-box;
     }
 
-    .product-title {
-      font-size: 1.5em;
-      margin: 20px 0;
+    .cart-link {
+      text-align: right;
+      padding: 10px 20px;
     }
 
-    .product-price {
+    .cart-link a {
+      text-decoration: none;
       color: #2e8b57;
       font-weight: bold;
-      margin-bottom: 20px;
-    }
-
-    .product-description {
-      margin-bottom: 20px;
-      font-size: 1.1em;
-      color: #555;
-    }
-
-    select, button {
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      background-color: #2e8b57;
-      color: white;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #228b22;
     }
   </style>
 </head>
@@ -95,70 +70,93 @@
 </header>
 
 <div class="cart-link">
-  🛒 <a href="cart.html">View Cart <span class="cart-count">0</span></a>
+  🛒 <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
 </div>
 
-<div class="product-details">
-  <img src="https://via.placeholder.com/250x150.png?text=Nametag+Product" alt="Nametag Product">
-  <div class="product-title">Nametag Product</div>
-  <div class="product-price">$5.00</div>
+<div class="container">
+  <img src="https://via.placeholder.com/400x200.png?text=Nametag" alt="Nametag Image">
+  <h2>Custom Nametag</h2>
+  <p>Personalized nametag printed in high-quality plastic. Customize with your color, text, and optional symbol.</p>
+  <p><strong>Price:</strong> $5.00</p>
 
-  <div class="product-description">
-    <p>This custom 3D printed nametag is perfect for personal use or gifts. Available in multiple colors. Choose your preferred color below.</p>
-  </div>
-
-  <!-- Color dropdown -->
-  <label for="color">Choose Color:</label>
-  <select id="color" name="color">
-    <option value="red">Red</option>
-    <option value="blue">Blue</option>
-    <option value="black">Black</option>
+  <label for="color">Choose a color:</label>
+  <select id="color" required>
+    <option value="">Select a color</option>
+    <option value="Red">Red</option>
+    <option value="Blue">Blue</option>
+    <option value="Black">Black</option>
   </select>
 
-  <br>
+  <label for="topText">Top text:</label>
+  <input type="text" id="topText" placeholder="Enter top text" required />
+
+  <label for="bottomText">Bottom text:</label>
+  <input type="text" id="bottomText" placeholder="Enter bottom text" required />
+
+  <label for="symbol">Choose a symbol:</label>
+  <select id="symbol">
+    <option value="None">None</option>
+    <option value="Pencil">Pencil</option>
+    <option value="YouTube">YouTube</option>
+    <option value="Instagram">Instagram</option>
+  </select>
 
   <button onclick="addToCart()">Add to Cart</button>
 </div>
 
-<footer class="footer">
-  &copy; 2025 CSPrints. All rights reserved.
-</footer>
-
 <script>
-  // Cart items counter
   function updateCartCount() {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const itemCount = cart.reduce((acc, item) => acc + item.quantity, 0);
-    const cartCountElement = document.querySelector('.cart-count');
-    if (cartCountElement) {
-      cartCountElement.textContent = itemCount;
-    }
+    const count = cart.reduce((total, item) => total + item.quantity, 0);
+    document.getElementById('cart-count').textContent = count;
   }
-
-  updateCartCount(); // Update cart count on page load
 
   function addToCart() {
     const color = document.getElementById('color').value;
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const topText = document.getElementById('topText').value.trim();
+    const bottomText = document.getElementById('bottomText').value.trim();
+    const symbol = document.getElementById('symbol').value;
+
+    if (!color || !topText || !bottomText) {
+      alert("Please fill out all required fields.");
+      return;
+    }
+
     const product = {
-      id: 1,
+      id: "nametag",
       title: "Nametag Product",
       price: 5.00,
+      quantity: 1,
       color: color,
-      quantity: 1
+      topText: topText,
+      bottomText: bottomText,
+      symbol: symbol
     };
 
-    cart.push(product);
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Group by all customizations
+    const existing = cart.find(item =>
+      item.id === product.id &&
+      item.color === color &&
+      item.topText === topText &&
+      item.bottomText === bottomText &&
+      item.symbol === symbol
+    );
+
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push(product);
+    }
+
     localStorage.setItem('cart', JSON.stringify(cart));
-    alert("Added to cart!");
-    updateCartCount(); // Update cart count after adding to cart
+    updateCartCount();
+    alert("Nametag added to cart!");
   }
+
+  updateCartCount();
 </script>
-
-</body>
-</html>
-
-  </script>
 
 </body>
 </html>
