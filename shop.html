@@ -19,22 +19,15 @@
       text-align: center;
     }
 
-    nav {
-      background-color: #61dafb;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      padding: 10px 0;
+    .cart-link {
+      text-align: right;
+      padding: 10px 20px;
     }
 
-    nav a {
-      color: #000;
+    .cart-link a {
       text-decoration: none;
+      color: #2e8b57;
       font-weight: bold;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
     }
 
     .shop-container {
@@ -79,17 +72,6 @@
       border-radius: 4px;
       cursor: pointer;
     }
-
-    .cart-link {
-      text-align: right;
-      padding: 10px 20px;
-    }
-
-    .cart-link a {
-      text-decoration: none;
-      color: #2e8b57;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
@@ -99,37 +81,41 @@
 </header>
 
 <div class="cart-link">
-  🛒 <a href="cart.html">View Cart <span class="cart-count">0</span></a>
+  🛒 <a href="cart.html">View Cart (<span id="cart-count">0</span> items)</a>
 </div>
 
 <div class="shop-container" id="shop">
-  <!-- Displaying only the Nametag product -->
-  <div class="product">
-    <img src="https://via.placeholder.com/250x150.png?text=Nametag+Product" alt="Nametag Product">
-    <div class="product-title">Nametag Product</div>
-    <div class="product-price">$5.00</div>
-    <button onclick="window.location.href='nametag-product.html'">View Nametag Product</button>
-  </div>
+  <!-- Products will be injected by JavaScript -->
 </div>
 
-<footer class="footer">
-  &copy; 2025 CSPrints. All rights reserved.
-</footer>
-
 <script>
-  // Cart items counter
-  function updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const itemCount = cart.reduce((acc, item) => acc + item.quantity, 0);
-    const cartCountElement = document.querySelector('.cart-count');
-    if (cartCountElement) {
-      cartCountElement.textContent = itemCount;
+  const products = [
+    {
+      id: 1,
+      title: "Classic Nameplate - Red",
+      price: 5.00,
+      image: "https://i.imgur.com/QXkvgdf.jpeg",
+      link: "nametag-product.html"
     }
-  }
+  ];
 
-  updateCartCount(); // Update cart count on page load
+  const shopContainer = document.getElementById('shop');
+  products.forEach(product => {
+    const productEl = document.createElement('div');
+    productEl.className = 'product';
+    productEl.innerHTML = `
+      <a href="${product.link}">
+        <img src="${product.image}" alt="${product.title}">
+        <div class="product-title">${product.title}</div>
+        <div class="product-price">$${product.price.toFixed(2)}</div>
+      </a>
+    `;
+    shopContainer.appendChild(productEl);
+  });
+
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  document.getElementById('cart-count').innerText = cart.length;
 </script>
 
 </body>
 </html>
-
