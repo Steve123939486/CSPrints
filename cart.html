@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart - CSPrints</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #20232a;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background: white;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+
+    .cart-item span {
+      flex: 1;
+    }
+
+    .total {
+      text-align: right;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    button {
+      background: #c0392b;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .paypal-button {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .paypal-button a {
+      background: #0070ba;
+      color: white;
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 1em;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Your Cart</h1>
+</header>
+
+<div class="container" id="cart-container">
+  <!-- Cart items will be injected here -->
+</div>
+
+<script>
+  const cartContainer = document.getElementById("cart-container");
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  function renderCart() {
+    cartContainer.innerHTML = '';
+    if (cart.length === 0) {
+      cartContainer.innerHTML = '<p>Your cart is empty.</p>';
+      return;
+    }
+
+    let total = 0;
+    cart.forEach((item, index) => {
+      total += item.price * item.quantity;
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "cart-item";
+      itemDiv.innerHTML = `
+        <span>${item.title} (x${item.quantity})</span>
+        <span>$${(item.price * item.quantity).toFixed(2)}</span>
+        <span><button onclick="removeItem(${index})">Remove</button></span>
+      `;
+      cartContainer.appendChild(itemDiv);
+    });
+
+    const totalEl = document.createElement("div");
+    totalEl.className = "total";
+    totalEl.textContent = `Total: $${total.toFixed(2)}`;
+    cartContainer.appendChild(totalEl);
+
+    const paypalEl = document.createElement("div");
+    paypalEl.className = "paypal-button";
+    paypalEl.innerHTML = `
+      <p><strong>Click below to complete your purchase:</strong></p>
+      <a href="https://paypal.me/stevenfontana103?country.x=US&locale.x=en_US"_blank">Pay with PayPal</a>
+      <p style="font-size: 0.9em; color: #777;">Please enter the total amount manually on the PayPal page.</p>
+    `;
+    cartContainer.appendChild(paypalEl);
+  }
+
+  function removeItem(index) {
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+  }
+
+  renderCart();
+</script>
+
+</body>
+</html>
