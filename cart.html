@@ -100,14 +100,14 @@
     We only ship within the contiguous United States. We do not ship to Alaska or Hawaii.
   </div>
 
-  <form id="checkout-form" onsubmit="handleSubmit(event)">
+  <form action="https://formspree.io/f/mvgazbjw" method="POST" onsubmit="prepareSubmission(event)">
     <h2>Shipping Information</h2>
 
     <input type="text" name="firstName" placeholder="First Name" required />
     <input type="text" name="lastName" placeholder="Last Name" required />
 
     <label for="state">State</label>
-    <select name="state" required>
+    <select name="state" id="state" required>
       <option value="">Select your state</option>
       <option>Alabama</option><option>Arizona</option><option>Arkansas</option>
       <option>California</option><option>Colorado</option><option>Connecticut</option>
@@ -134,7 +134,7 @@
     <div class="no-returns">Note: All sales are final. No returns or refunds.</div>
 
     <input type="hidden" name="cartDetails" id="cartDetails" />
-    <button type="submit">Submit & Pay</button>
+    <button type="submit">Checkout via PayPal</button>
   </form>
 </div>
 
@@ -179,38 +179,24 @@
     loadCart();
   }
 
-  function getCartSummary() {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    return cart.map(item => {
-      const c = item.customizations || {};
-      return `${item.title} x${item.quantity}
-Top Text: ${c.topText || ''}
-Bottom Text: ${c.bottomText || ''}
-Color: ${c.color || ''}
-Symbol: ${c.symbol || ''}`.trim();
-    }).join('\n\n');
-  }
-
-  function handleSubmit(event) {
+  function prepareSubmission(event) {
     event.preventDefault();
-    const form = document.getElementById('checkout-form');
-    const data = new FormData(form);
-    data.set("cartDetails", getCartSummary());
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const formatted = cart.map(item => {
+      const custom = item.customizations || {};
+      return `${item.title} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}
+Top Text: ${custom.topText || ''}
+Bottom Text: ${custom.bottomText || ''}
+Color: ${custom.color || ''}
+Symbol: ${custom.symbol || ''}
+`.trim();
+    }).join('\n\n');
 
-    fetch("https://formspree.io/f/mvgazbjw", {
-      method: "POST",
-      body: data
-    }).then(() => {
-      alert("Details submitted! Redirecting to PayPal...");
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      localStorage.removeItem('cart');
+    document.getElementById('cartDetails').value = formatted;
 
-      // 👇 Replace YOURUSERNAME with your PayPal.Me username
-      window.location.href = `https://paypal.me/stevenfontana103?country.x=US&locale.x=en_US/${total.toFixed(2)}`;
-    }).catch(() => {
-      alert("Something went wrong submitting the form.");
-    });
+    // Redirect to PayPal.me
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    window.location.href = `https://www.paypal.me/stevenfontana103/${total.toFixed(2)}`;
   }
 
   loadCart();
@@ -218,4 +204,5 @@ Symbol: ${c.symbol || ''}`.trim();
 
 </body>
 </html>
+
 
