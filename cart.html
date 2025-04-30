@@ -84,6 +84,13 @@
       margin-top: 20px;
       font-weight: bold;
     }
+    .instructions {
+      margin: 20px 0;
+      padding: 15px;
+      background-color: #e3f7ff;
+      border: 1px solid #b3e0f7;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -101,7 +108,16 @@
     We only ship within the contiguous United States. We do not ship to Alaska or Hawaii.
   </div>
 
-  <form action="https://script.google.com/macros/s/AKfycbyw7Vr6t_rL-nl7bdgpJ98NUC91n-Ixy2ybJIMA_baKtMj5JmjC6XS_tmnzAFcID9S2/exec" method="POST" onsubmit="prepareSubmission(event)">
+  <!-- Added instructions for the user -->
+  <div class="instructions">
+    <p><strong>Important:</strong> To proceed with your purchase, please follow these steps:</p>
+    <ul>
+      <li>1. Fill in your shipping details and click "Submit Shipping Info".</li>
+      <li>2. After submitting the shipping info, click the "Pay Now via PayPal" button to complete your payment.</li>
+    </ul>
+  </div>
+
+  <form action="https://formspree.io/f/mvgazbjw" method="POST" onsubmit="prepareSubmission(event)">
     <h2>Shipping Information</h2>
     <input type="text" name="firstName" placeholder="First Name" required />
     <input type="text" name="lastName" placeholder="Last Name" required />
@@ -130,7 +146,7 @@
     <input type="tel" name="phone" placeholder="Phone Number" required />
     <div class="no-returns">Note: All sales are final. No returns or refunds.</div>
     <input type="hidden" name="cartDetails" id="cartDetails" />
-    <button type="submit">Submit Details</button>
+    <button type="submit">Submit Shipping Info</button>
   </form>
 
   <button class="pay-now" onclick="payWithPayPal()">Pay Now via PayPal</button>
@@ -185,8 +201,8 @@
 Top Text: ${custom.topText || ''}
 Bottom Text: ${custom.bottomText || ''}
 Color: ${custom.color || ''}
-Symbol: ${custom.symbol || ''}
-`.trim();
+Symbol: ${custom.symbol || ''}`
+      .trim();
     }).join('\n\n');
     document.getElementById('cartDetails').value = formatted;
   }
@@ -206,4 +222,3 @@ Symbol: ${custom.symbol || ''}
 
 </body>
 </html>
-
