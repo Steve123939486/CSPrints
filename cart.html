@@ -101,7 +101,7 @@
     We only ship within the contiguous United States. We do not ship to Alaska or Hawaii.
   </div>
 
-  <form id="checkout-form" onsubmit="handleSubmit(event)">
+  <form id="checkout-form" action="https://formspree.io/f/mvgazbjw" method="POST" onsubmit="prepareAndSubmitForm(event)">
     <h2>Shipping Information</h2>
     <input type="text" name="firstName" placeholder="First Name" required />
     <input type="text" name="lastName" placeholder="Last Name" required />
@@ -130,7 +130,7 @@
     <input type="tel" name="phone" placeholder="Phone Number" required />
     <div class="no-returns">Note: All sales are final. No returns or refunds.</div>
     <input type="hidden" name="cartDetails" id="cartDetails" />
-    <button type="submit" id="submit-button">Submit & Pay</button>
+    <button type="submit">Submit Details and Pay Now</button>
   </form>
 </div>
 
@@ -175,7 +175,9 @@
     loadCart();
   }
 
-  function prepareSubmission(event) {
+  function prepareAndSubmitForm(event) {
+    event.preventDefault(); // Prevent default form submission
+
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const formatted = cart.map(item => {
       const custom = item.customizations || {};
@@ -187,26 +189,16 @@ Symbol: ${custom.symbol || ''}
 `.trim();
     }).join('\n\n');
     document.getElementById('cartDetails').value = formatted;
-  }
 
-  function handleSubmit(event) {
-    event.preventDefault(); // Prevent form from submitting to Formspree directly
-
-    // Prepare the shipping info and cart details for submission
-    prepareSubmission(event);
-
-    // Use Formspree API to submit the form via JavaScript
+    // Submit the form to Formspree
     const form = document.getElementById('checkout-form');
-    const formData = new FormData(form);
     fetch(form.action, {
       method: 'POST',
-      body: formData,
+      body: new FormData(form)
     })
     .then(response => response.json())
     .then(data => {
-      console.log('Form submitted successfully:', data); // For debugging
-      
-      // If form submission is successful, proceed to PayPal
+      // Redirect to PayPal after successful form submission
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
       let total = 0;
       cart.forEach(item => {
@@ -216,7 +208,6 @@ Symbol: ${custom.symbol || ''}
       window.location.href = paypalLink;
     })
     .catch(error => {
-      console.error('Error submitting form:', error); // For debugging
       alert('There was a problem with your submission. Please try again later.');
     });
   }
