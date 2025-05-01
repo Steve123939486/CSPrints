@@ -208,69 +208,44 @@
   const basePrice = 5.00; // Base price of the product
   let shippingCost = 0; // Initialize shipping cost
 
+  const shippingData = {
+    'Small': {
+      'AL': 2.50, 'AR': 2.50, 'AZ': 3.00, 'CA': 3.50, 'CO': 3.00, 'CT': 3.50, 'DE': 2.75, 'FL': 2.50, 'GA': 2.50,
+      'ID': 3.00, 'IL': 2.75, 'IN': 2.50, 'IA': 2.50, 'KS': 2.50, 'KY': 2.50, 'LA': 2.75, 'MD': 2.50, 'MA': 3.00,
+      'MI': 2.50, 'MN': 2.50, 'MS': 2.75, 'MO': 2.50, 'MT': 3.00, 'NC': 2.50, 'ND': 3.00, 'NE': 2.50, 'NH': 3.00,
+      'NJ': 3.00, 'NM': 3.00, 'NY': 3.00, 'OH': 2.75, 'OK': 2.50, 'OR': 3.00, 'PA': 2.75, 'RI': 3.00, 'SC': 2.50,
+      'SD': 3.00, 'TN': 2.50, 'TX': 2.50, 'UT': 3.00, 'VA': 2.50, 'VT': 3.00, 'WA': 3.50, 'WI': 2.50, 'WV': 2.50,
+      'WY': 3.00
+    },
+    'Medium': {
+      'AL': 3.00, 'AR': 3.00, 'AZ': 3.50, 'CA': 4.00, 'CO': 3.50, 'CT': 4.00, 'DE': 3.25, 'FL': 3.00, 'GA': 3.00,
+      'ID': 3.50, 'IL': 3.25, 'IN': 3.00, 'IA': 3.00, 'KS': 3.00, 'KY': 3.00, 'LA': 3.25, 'MD': 3.00, 'MA': 3.50,
+      'MI': 3.00, 'MN': 3.00, 'MS': 3.25, 'MO': 3.00, 'MT': 3.50, 'NC': 3.00, 'ND': 3.50, 'NE': 3.00, 'NH': 3.50,
+      'NJ': 3.50, 'NM': 3.50, 'NY': 3.50, 'OH': 3.25, 'OK': 3.00, 'OR': 3.50, 'PA': 3.25, 'RI': 3.50, 'SC': 3.00,
+      'SD': 3.50, 'TN': 3.00, 'TX': 3.00, 'UT': 3.50, 'VA': 3.00, 'VT': 3.50, 'WA': 4.00, 'WI': 3.00, 'WV': 3.00,
+      'WY': 3.50
+    },
+    'Large': {
+      'AL': 4.00, 'AR': 4.00, 'AZ': 4.50, 'CA': 5.00, 'CO': 4.50, 'CT': 5.00, 'DE': 4.25, 'FL': 4.00, 'GA': 4.00,
+      'ID': 4.50, 'IL': 4.25, 'IN': 4.00, 'IA': 4.00, 'KS': 4.00, 'KY': 4.00, 'LA': 4.25, 'MD': 4.00, 'MA': 4.50,
+      'MI': 4.00, 'MN': 4.00, 'MS': 4.25, 'MO': 4.00, 'MT': 4.50, 'NC': 4.00, 'ND': 4.50, 'NE': 4.00, 'NH': 4.50,
+      'NJ': 4.50, 'NM': 4.50, 'NY': 4.50, 'OH': 4.25, 'OK': 4.00, 'OR': 4.50, 'PA': 4.25, 'RI': 4.50, 'SC': 4.00,
+      'SD': 4.50, 'TN': 4.00, 'TX': 4.00, 'UT': 4.50, 'VA': 4.00, 'VT': 4.50, 'WA': 5.00, 'WI': 4.00, 'WV': 4.00,
+      'WY': 4.50
+    }
+  };
+
   function updateShippingCost() {
     const state = document.getElementById('shippingState').value;
+    const size = document.getElementById('size').value;
     
-    // Assign shipping cost based on the selected state
-    const shippingCosts = {
-      'Alabama': 5.00,
-      'Arizona': 4.00,
-      'Arkansas': 4.50,
-      'California': 5.00,
-      'Colorado': 4.00,
-      'Connecticut': 4.50,
-      'Delaware': 5.50,
-      'Florida': 6.00,
-      'Georgia': 5.00,
-      'Idaho': 4.50,
-      'Illinois': 5.00,
-      'Indiana': 4.50,
-      'Iowa': 4.50,
-      'Kansas': 4.50,
-      'Kentucky': 5.00,
-      'Louisiana': 5.00,
-      'Maine': 5.50,
-      'Maryland': 4.50,
-      'Massachusetts': 4.50,
-      'Michigan': 4.00,
-      'Minnesota': 4.50,
-      'Mississippi': 5.00,
-      'Missouri': 4.50,
-      'Montana': 6.00,
-      'Nebraska': 4.50,
-      'Nevada': 5.00,
-      'New Hampshire': 5.50,
-      'New Jersey': 4.50,
-      'New Mexico': 5.00,
-      'New York': 7.00,
-      'North Carolina': 5.00,
-      'North Dakota': 5.50,
-      'Ohio': 4.50,
-      'Oklahoma': 5.00,
-      'Oregon': 5.00,
-      'Pennsylvania': 5.00,
-      'Rhode Island': 5.50,
-      'South Carolina': 5.00,
-      'South Dakota': 5.00,
-      'Tennessee': 5.00,
-      'Texas': 4.00,
-      'Utah': 4.50,
-      'Vermont': 5.50,
-      'Virginia': 4.50,
-      'Washington': 5.00,
-      'West Virginia': 5.50,
-      'Wisconsin': 4.50,
-      'Wyoming': 6.00
-    };
+    if (state && size) {
+      shippingCost = shippingData[size][state] || 0;
+      document.getElementById('shippingCost').textContent = `Shipping Cost: $${shippingCost.toFixed(2)}`;
 
-    shippingCost = shippingCosts[state] || 0; // Default to $0 if no state is selected
-
-    // Update shipping cost display
-    document.getElementById('shippingCost').textContent = `Shipping Cost: $${shippingCost.toFixed(2)}`;
-
-    // Update total price display
-    const totalPrice = basePrice + shippingCost;
-    document.getElementById('totalPrice').textContent = `Total Price: $${totalPrice.toFixed(2)}`;
+      const totalPrice = basePrice + shippingCost;
+      document.getElementById('totalPrice').textContent = `Total Price: $${totalPrice.toFixed(2)}`;
+    }
   }
 
   function updateCartCount() {
@@ -286,27 +261,26 @@
     const bottomText = document.getElementById('bottomText').value;
     const symbol = document.getElementById('symbol').value;
 
-    // Add the selected item to the cart (save it in localStorage)
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    cart.push({
+    const cartItem = {
+      name: "Custom Nametag",
       color,
       size,
       topText,
       bottomText,
       symbol,
-      quantity: 1,
-      price: basePrice + shippingCost
-    });
+      price: basePrice + shippingCost,
+      quantity: 1
+    };
 
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart.push(cartItem);
     localStorage.setItem('cart', JSON.stringify(cart));
 
     updateCartCount();
   }
 
-  // Initialize the cart count when the page loads
-  updateCartCount();
+  updateCartCount(); // Update the cart count when the page loads
 </script>
 
 </body>
 </html>
-
