@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CSPrints - Home</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <header>
+    <h1>CSPrints</h1>
+    <p>Your Go-To Source for Custom 3D Printed Products</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="cart.html">Cart</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <div class="cart-link">
+    🛒 <a href="cart.html">View Cart (<span id="cart-count">0</span> items)</a>
+  </div>
+
+  <main>
+    <section class="hero">
+      <h2>Welcome to CSPrints</h2>
+      <p>We bring your ideas to life with high-quality, custom 3D printing. Whether you need personalized nameplates, parts, or prototypes, we’ve got you covered.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    &copy; 2025 CSPrints. All rights reserved.
+  </footer>
+
+  <script>
+    function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const count = cart.reduce((total, item) => total + item.quantity, 0);
+        document.getElementById('cart-count').textContent = count;
+    }
+    updateCartCount();
+  </script>
+
+</body>
+</html>
+
+</body>
+</html>

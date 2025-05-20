@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CSPrints - Cart</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .cart-item {
+      background-color: #ffffff;
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #333;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .cart-item button {
+      background-color: #ff4d4d;
+      border: none;
+      color: white;
+      padding: 6px 10px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+      width: auto;
+      margin-top: 0;
+      font-size: 14px;
+    }
+    .cart-item button:hover {
+      background-color: #e03c3c;
+    }
+
+    .warning, .instructions, .no-returns {
+        background-color: #1f3d7a;
+        border: 1px solid #3e7bff;
+        padding: 15px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        color: #e0ecff;
+        line-height: 1.5;
+    }
+
+    .instructions ul {
+        list-style-position: inside;
+        padding-left: 0;
+        margin-top: 10px;
+    }
+
+    .instructions li {
+        margin-bottom: 5px;
+    }
+
+    .no-returns {
+        text-align: center;
+        font-size: 0.9em;
+        opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Your Cart</h1>
+</header>
+
+<div class="container">
+  <div id="cart-items"></div>
+  <div class="cart-total" id="cart-total"></div>
+  <button onclick="clearCart()">Clear Cart</button>
+
+  <div class="warning">
+    We only ship within the contiguous United States. We do not ship to Alaska or Hawaii.
+  </div>
+
+  <div class="instructions">
+    <p><strong>Important:</strong> Please fill in your shipping details below and click "Submit Shipping Info". You will then be redirected to PayPal to complete your payment.</p>
+  </div>
+
+  <form id="shippingForm" action="https://formspree.io/f/mvgazbjw" method="POST" onsubmit="prepareAndRedirect(event)">
+    <h2>Shipping Information</h2>
+    <input type="text" name="firstName" placeholder="First Name" required />
+    <input type="text" name="lastName" placeholder="Last Name" required />
+    <label for="state">State</label>
+    <select name="state" id="state" required>
+      <option value="">Select your state</option>
+      <option>Alabama</option><option>Arizona</option><option>Arkansas</option>
+      <option>California</option><option>Colorado</option><option>Connecticut</option>
+      <option>Delaware</option><option>Florida</option><option>Georgia</option>
+      <option>Idaho</option><option>Illinois</option><option>Indiana</option>
+      <option>Iowa</option><option>Kansas</option><option>Kentucky</option>
+      <option>Louisiana</option><option>Maine</option><option>Maryland</option>
+      <option>Massachusetts</option><option>Michigan</option><option>Minnesota</option>
+      <option>Mississippi</option><option>Missouri</option><option>Nebraska</option>
+      <option>Nevada</option><option>New Hampshire</option><option>New Jersey</option>
+      <option>New Mexico</option><option>New York</option><option>North Carolina</option>
+      <option>North Dakota</option><option>Ohio</option><option>Oklahoma</option>
+      <option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option>
+      <option>South Carolina</option><option>South Dakota</option><option>Tennessee</option>
+      <option>Texas</option><option>Utah</option><option>Vermont</option>
+      <option>Virginia</option><option>Washington</option><option>West Virginia</option>
+      <option>Wisconsin</option><option>Wyoming</option>
+    </select>
+    <input type="text" name="street" placeholder="Street Address" required />
+    <input type="text" name="postal" placeholder="Postal Code" required />
+    <input type="tel" name="phone" placeholder="Phone Number" required />
+    <input type="email" name="email" placeholder="Email Address" required />
+    <div class="no-returns">Note: All sales are final. No returns or refunds.</div>
+    <input type="hidden" name="cartDetails" id="cartDetails" />
+    <button type="submit">Submit Shipping Info & Go To PayPal</button>
+  </form>
+
+</div>
+
+<script>
+  function loadCart() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const container = document.getElementById('cart-items');
+    const totalDisplay = document.getElementById('cart-total');
+    container.innerHTML = '';
+    let total = 0;
+
+    if (cart.length === 0) {
+        container.innerHTML = '<p>Your cart is empty.</p>';
+        totalDisplay.textContent = 'Total: $0.00';
+        return;
+    }
+
+    cart.forEach((item, index) => {
+      const div = document.createElement('div');
+      div.className = 'cart-item';
+      const customParts = [];
+      if (item.customizations) {
+          if (item.customizations.topText) customParts.push(`Top Text: ${item.customizations.topText}`);
+          if (item.customizations.bottomText) customParts.push(`Bottom Text: ${item.customizations.bottomText}`);
+          if (item.customizations.color) customParts.push(`Color: ${item.customizations.color}`);
+          if (item.customizations.symbol) customParts.push(`Symbol: ${item.customizations.symbol}`);
+      }
+      const custom = customParts.length > 0 ? `<br>${customParts.join('<br>')}` : '';
+
+      div.innerHTML = `
+        <span>${item.title} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}</span>
+        <div class="cart-item-details">${custom}</div>
+        <button onclick="removeItem(${index})">Remove</button>
+      `;
+      container.appendChild(div);
+      total += item.price * item.quantity;
+    });
+
+    totalDisplay.textContent = `Total: $${total.toFixed(2)}`;
+  }
+
+  function removeItem(index) {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    loadCart();
+  }
+
+  function clearCart() {
+    localStorage.removeItem('cart');
+    loadCart();
+    alert('Your cart has been cleared.');
+  }
+
+  async function prepareAndRedirect(event) {
+    event.preventDefault();
+
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    if (cart.length === 0) {
+        alert('Your cart is empty. Please add items before submitting shipping information.');
+        return;
+    }
+
+    let total = 0;
+    cart.forEach(item => {
+      total += item.price * item.quantity;
+    });
+
+    if (total <= 0) {
+        alert('Cannot proceed with an empty or zero-value cart. Please add items.');
+        return;
+    }
+
+    const formattedCartDetails = cart.map(item => {
+      const custom = item.customizations || {};
+      return `Item: ${item.title} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}
+    Top Text: ${custom.topText || 'N/A'}
+    Bottom Text: ${custom.bottomText || 'N/A'}
+    Color: ${custom.color || 'N/A'}
+    Symbol: ${custom.symbol || 'N/A'}`
+      .trim();
+    }).join('\n\n');
+    document.getElementById('cartDetails').value = formattedCartDetails;
+
+    const form = document.getElementById('shippingForm');
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            alert('Shipping information submitted! Redirecting to PayPal for payment.');
+            clearCart();
+            const paypalLink = `https://paypal.me/stevenfontana103/${total.toFixed(2)}?country.x=US&locale.x=en_US`;
+            window.open(paypalLink, '_blank');
+        } else {
+            alert('There was an error submitting your shipping information. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Network error submitting shipping information. Please check your connection and try again.');
+    }
+  }
+
+  loadCart();
+</script>
+
+</body>
+</html>

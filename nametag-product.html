@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nametag Product - CSPrints</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Classic Nameplate</h1>
+</header>
+
+<div class="cart-link">
+  🛒 <a href="cart.html">View Cart (<span id="cart-count">0</span> items)</a>
+</div>
+
+<div class="container product-detail">
+  <img id="mainImage" src="https://i.imgur.com/QXkvgdf.jpeg" alt="Classic Nameplate">
+
+  <div class="image-gallery">
+    <img src="https://i.imgur.com/QXkvgdf.jpeg" alt="Nameplate front view" onclick="changeMainImage(this.src)">
+    <img src="https://i.imgur.com/XF8gYg7.jpeg" alt="Nameplate angled view" onclick="changeMainImage(this.src)">
+    <img src="https://i.imgur.com/00tL8w9.jpeg" alt="Nameplate in hand" onclick="changeMainImage(this.src)">
+    <img src="https://i.imgur.com/83wD55i.jpeg" alt="Nameplate close-up" onclick="changeMainImage(this.src)">
+  </div>
+
+  <h2>Customize Your Nameplate</h2>
+  <p>Price: $<span id="basePrice">5.00</span></p>
+
+  <form id="nametagForm">
+    <label for="color">Color:</label>
+    <select id="color" required>
+      <option value="">Select a color</option>
+      <option value="Black">Black</option>
+      <option value="White">White</option>
+      <option value="Blue">Blue</option>
+      <option value="Red">Red</option>
+    </select>
+
+    <label for="size">Size:</label>
+    <select id="size" onchange="updateShippingCost()" required>
+      <option value="">Select a size</option>
+      <option value="Small">Small</option>
+      <option value="Medium">Medium</option>
+      <option value="Large">Large</option>
+    </select>
+
+    <label for="topText">Top Text (Optional):</label>
+    <input type="text" id="topText" maxlength="15" placeholder="e.g., Your Name">
+
+    <label for="bottomText">Bottom Text (Optional):</label>
+    <input type="text" id="bottomText" maxlength="15" placeholder="e.g., Your Title">
+
+    <label for="symbol">Symbol (Optional):</label>
+    <select id="symbol">
+      <option value="">No Symbol</option>
+      <option value="Heart">Heart ❤️</option>
+      <option value="Star">Star ⭐</option>
+      <option value="Circle">Circle ⚪</option>
+    </select>
+
+    <label for="shippingState">Shipping State (Contiguous US only):</label>
+    <select id="shippingState" onchange="updateShippingCost()" required>
+      <option value="">Select your state</option>
+      <option>Alabama</option><option>Arizona</option><option>Arkansas</option>
+      <option>California</option><option>Colorado</option><option>Connecticut</option>
+      <option>Delaware</option><option>Florida</option><option>Georgia</option>
+      <option>Idaho</option><option>Illinois</option><option>Indiana</option>
+      <option>Iowa</option><option>Kansas</option><option>Kentucky</option>
+      <option>Louisiana</option><option>Maine</option><option>Maryland</option>
+      <option>Massachusetts</option><option>Michigan</option><option>Minnesota</option>
+      <option>Mississippi</option><option>Missouri</option><option>Nebraska</option>
+      <option>Nevada</option><option>New Hampshire</option><option>New Jersey</option>
+      <option>New Mexico</option><option>New York</option><option>North Carolina</option>
+      <option>North Dakota</option><option>Ohio</option><option>Oklahoma</option>
+      <option>Oregon</option><option>Pennsylvania</option><option>Rhode Island</option>
+      <option>South Carolina</option><option>South Dakota</option><option>Tennessee</option>
+      <option>Texas</option><option>Utah</option><option>Vermont</option>
+      <option>Virginia</option><option>Washington</option><option>West Virginia</option>
+      <option>Wisconsin</option><option>Wyoming</option>
+    </select>
+
+    <p id="shippingCost">Shipping Cost: $0.00</p>
+    <p id="totalPrice">Total Price: $5.00</p>
+
+    <button type="button" onclick="addToCart()">Add to Cart</button>
+  </form>
+</div>
+
+<script>
+  const basePrice = 5.00;
+  let shippingCost = 0;
+
+  function changeMainImage(src) {
+    document.getElementById('mainImage').src = src;
+  }
+
+  const shippingData = {
+    "Small": {
+      "Alabama": 3.50, "Arizona": 3.50, "Arkansas": 3.50, "California": 4.00, "Colorado": 4.00,
+      "Connecticut": 3.50, "Delaware": 3.50, "Florida": 3.50, "Georgia": 3.50, "Idaho": 4.00,
+      "Illinois": 3.50, "Indiana": 3.50, "Iowa": 3.50, "Kansas": 3.50, "Kentucky": 3.50,
+      "Louisiana": 3.50, "Maine": 3.50, "Maryland": 3.50, "Massachusetts": 3.50, "Michigan": 3.50,
+      "Minnesota": 3.50, "Mississippi": 3.50, "Missouri": 3.50, "Nebraska": 3.50, "Nevada": 4.00,
+      "New Hampshire": 3.50, "New Jersey": 3.50, "New Mexico": 4.00, "New York": 3.50, "North Carolina": 3.50,
+      "North Dakota": 3.50, "Ohio": 3.50, "Oklahoma": 3.50, "Oregon": 4.00, "Pennsylvania": 3.50,
+      "Rhode Island": 3.50, "South Carolina": 3.50, "South Dakota": 3.50, "Tennessee": 3.50, "Texas": 3.50,
+      "Utah": 4.00, "Vermont": 3.50, "Virginia": 3.50, "Washington": 4.00, "West Virginia": 3.50,
+      "Wisconsin": 3.50, "Wyoming": 4.00
+    },
+    "Medium": {
+      "Alabama": 4.00, "Arizona": 4.00, "Arkansas": 4.00, "California": 4.50, "Colorado": 4.50,
+      "Connecticut": 4.00, "Delaware": 4.00, "Florida": 4.00, "Georgia": 4.00, "Idaho": 4.50,
+      "Illinois": 4.00, "Indiana": 4.00, "Iowa": 4.00, "Kansas": 4.00, "Kentucky": 4.00,
+      "Louisiana": 4.00, "Maine": 4.00, "Maryland": 4.00, "Massachusetts": 4.00, "Michigan": 4.00,
+      "Minnesota": 4.00, "Mississippi": 4.00, "Missouri": 4.00, "Nebraska": 4.00, "Nevada": 4.50,
+      "New Hampshire": 4.00, "New Jersey": 4.00, "New Mexico": 4.50, "New York": 4.00, "North Carolina": 4.00,
+      "North Dakota": 4.00, "Ohio": 4.00, "Oklahoma": 4.00, "Oregon": 4.50, "Pennsylvania": 4.00,
+      "Rhode Island": 4.00, "South Carolina": 4.00, "South Dakota": 4.00, "Tennessee": 4.00, "Texas": 4.00,
+      "Utah": 4.50, "Vermont": 4.00, "Virginia": 4.00, "Washington": 4.50, "West Virginia": 4.00,
+      "Wisconsin": 4.00, "Wyoming": 4.50
+    },
+    "Large": {
+      "Alabama": 4.50, "Arizona": 4.50, "Arkansas": 4.50, "California": 5.00, "Colorado": 5.00,
+      "Connecticut": 4.50, "Delaware": 4.50, "Florida": 4.50, "Georgia": 4.50, "Idaho": 5.00,
+      "Illinois": 4.50, "Indiana": 4.50, "Iowa": 4.50, "Kansas": 4.50, "Kentucky": 4.50,
+      "Louisiana": 4.50, "Maine": 4.50, "Maryland": 4.50, "Massachusetts": 4.50, "Michigan": 4.50,
+      "Minnesota": 4.50, "Mississippi": 4.50, "Missouri": 4.50, "Nebraska": 4.50, "Nevada": 5.00,
+      "New Hampshire": 4.50, "New Jersey": 4.50, "New Mexico": 5.00, "New York": 4.50, "North Carolina": 4.50,
+      "North Dakota": 4.50, "Ohio": 4.50, "Oklahoma": 4.50, "Oregon": 5.00, "Pennsylvania": 4.50,
+      "Rhode Island": 4.50, "South Carolina": 4.50, "South Dakota": 4.50, "Tennessee": 4.50, "Texas": 4.50,
+      "Utah": 5.00, "Vermont": 4.50, "Virginia": 4.50, "Washington": 5.00, "West Virginia": 4.50,
+      "Wisconsin": 4.50, "Wyoming": 5.00
+    }
+  };
+
+  function updateShippingCost() {
+    const size = document.getElementById('size').value;
+    const state = document.getElementById('shippingState').value;
+
+    if (size && state && shippingData[size] && shippingData[size][state]) {
+      shippingCost = shippingData[size][state];
+    } else {
+      shippingCost = 0;
+    }
+
+    document.getElementById('shippingCost').textContent = `Shipping Cost: $${shippingCost.toFixed(2)}`;
+    document.getElementById('totalPrice').textContent = `Total Price: $${(basePrice + shippingCost).toFixed(2)}`;
+  }
+
+  function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const count = cart.reduce((total, item) => total + item.quantity, 0);
+    document.getElementById('cart-count').textContent = count;
+  }
+
+  function addToCart() {
+    const color = document.getElementById('color').value;
+    const size = document.getElementById('size').value;
+    const topText = document.getElementById('topText').value;
+    const bottomText = document.getElementById('bottomText').value;
+    const symbol = document.getElementById('symbol').value;
+
+    if (!color || !size || !document.getElementById('shippingState').value) {
+        alert('Please select a color, size, and shipping state.');
+        return;
+    }
+
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart.push({
+      title: "Classic Nameplate",
+      customizations: {
+        color,
+        size,
+        topText,
+        bottomText,
+        symbol
+      },
+      quantity: 1,
+      price: basePrice + shippingCost
+    });
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+    alert('Item added to cart!');
+  }
+
+  updateCartCount();
+  updateShippingCost();
+</script>
+
+</body>
+</html>
